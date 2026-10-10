@@ -1,23 +1,32 @@
 import ArgumentParser
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import MCP
 import Card
 import MTGServices
+#if canImport(os)
 import os.log
+#endif
 
 // Helper for debug logging that goes to both stderr and os_log
+#if canImport(os)
 private let debugLogger = os.Logger(subsystem: "com.mtg-mcp", category: "debug")
+#endif
 
 private func debugPrint(_ message: String) {
+    #if canImport(os)
     debugLogger.debug("\(message)")
-    fputs("DEBUG: \(message)\n", stderr)
-    fflush(stderr)
+    #endif
+    FileHandle.standardError.write(Data("DEBUG: \(message)\n".utf8))
 }
 
 private func errorPrint(_ message: String) {
+    #if canImport(os)
     debugLogger.error("\(message)")
-    fputs("ERROR: \(message)\n", stderr)
-    fflush(stderr)
+    #endif
+    FileHandle.standardError.write(Data("ERROR: \(message)\n".utf8))
 }
 
 /// MTG Deck Manager MCP Server
